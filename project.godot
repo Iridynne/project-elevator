@@ -11,5 +11,18 @@ config_version=5
 [application]
 
 config/name="project-elevator"
+run/main_scene="uid://bm2wiyev7q6j0"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Global="*res://autoloads/global.gd"
+NetworkHandler="*res://autoloads/network_handler.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/always_on_top=true
+window/stretch/mode="canvas_items"

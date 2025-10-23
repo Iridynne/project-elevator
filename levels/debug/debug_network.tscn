@@ -1,10 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://bm2wiyev7q6j0"]
+[gd_scene load_steps=4 format=3 uid="uid://bm2wiyev7q6j0"]
 
 [ext_resource type="Script" uid="uid://s1jimucnwiyo" path="res://levels/debug/debug_network.gd" id="1_vqt6f"]
+[ext_resource type="Script" uid="uid://bhpl58q3nulnp" path="res://common/player_spawner.gd" id="2_y3n6v"]
+[ext_resource type="PackedScene" uid="uid://br2ngci4gb07r" path="res://player/player.tscn" id="3_vm0w2"]
 
 [node name="DebugNetwork" type="Node3D" node_paths=PackedStringArray("address_entry")]
 script = ExtResource("1_vqt6f")
 address_entry = NodePath("CanvasLayer/MultiplayerMenu/MarginContainer/VBoxContainer/AddressEntry")
+
+[node name="PlayerSpawner" type="Node" parent="."]
+script = ExtResource("2_y3n6v")
+player_scene = ExtResource("3_vm0w2")
+metadata/_custom_type_script = "uid://bhpl58q3nulnp"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

@@ -10,18 +10,14 @@ signal connection_failed
 const DEFAULT_PORT: int = 27017
 const MAX_PLAYERS: int = 4
 
-var is_server: bool = false
-var connected_peers: Array[int] = []
-
 
 func _ready() -> void:
 	# Hook up multiplayer events
-	var mp: MultiplayerAPI = multiplayer
-	mp.peer_connected.connect(_on_peer_connected)
-	mp.peer_disconnected.connect(_on_peer_disconnected)
-	mp.connected_to_server.connect(_on_connected_to_server)
-	mp.connection_failed.connect(_on_connection_failed)
-	mp.server_disconnected.connect(_on_server_disconnected)
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 
 func start_server(port: int = DEFAULT_PORT) -> void:
@@ -32,8 +28,6 @@ func start_server(port: int = DEFAULT_PORT) -> void:
 		return
 	
 	multiplayer.multiplayer_peer = peer
-	is_server = true
-	connected_peers.clear()
 	server_started.emit()
 	print("Server started on port %d" % port)
 	
@@ -48,19 +42,16 @@ func join_server(ip: String, port: int = DEFAULT_PORT) -> void:
 		return
 	
 	multiplayer.multiplayer_peer = peer
-	is_server = false
 	print("Connecting to %s:%d..." % [ip, port])
 
 
 func _on_peer_connected(id: int) -> void:
 	print("Peer connected: %d" % id)
-	connected_peers.append(id)
 	peer_connected.emit(id)
 
 
 func _on_peer_disconnected(id: int) -> void:
 	print("Peer disconnected: %d" % id)
-	connected_peers.erase(id)
 	peer_disconnected.emit(id)
 
 

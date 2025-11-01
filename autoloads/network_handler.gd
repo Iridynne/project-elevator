@@ -1,5 +1,5 @@
 extends Node
-## Autoload that manages all networking setup and events
+## Autoload that manages all networking setup and events.
 ##
 ## Handles creating and connecting to multiplayer servers using the [ENetMultiplayerPeer].
 ## It provides convenient signals for connection lifecycle events and automatically sets up
@@ -25,7 +25,7 @@ const DEFAULT_PORT: int = 27017
 ## Maximum amount of clients allowed to connect to the server.
 const MAX_CLIENTS: int = 3
 
-## Default IP of the created client.
+## Default IP to create the client connection to.
 const DEFAULT_IP: String = "127.0.0.1"
 
 

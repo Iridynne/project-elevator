@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://b0c68xe3xs06h"]
+
+[ext_resource type="Script" uid="uid://bnrjmr6whcpdd" path="res://levels/game_level.gd" id="1_qc6i3"]
+
+[sub_resource type="Environment" id="Environment_qc6i3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qc6i3"]
+albedo_color = Color(0, 0.28640607, 0.019908214, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qc6i3"]
+material = SubResource("StandardMaterial3D_qc6i3")
+size = Vector3(50, 1, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sklrn"]
+size = Vector3(50, 1, 50)
+
+[node name="GameLevel" type="Node3D"]
+script = ExtResource("1_qc6i3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_qc6i3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+collision_mask = 31
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("BoxMesh_qc6i3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_sklrn")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://br2ngci4gb07r")
+spawn_path = NodePath("..")

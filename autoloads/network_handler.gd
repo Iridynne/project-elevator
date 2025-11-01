@@ -1,14 +1,30 @@
 extends Node
+## An autoload that manages all networking setup and events
+##
+## This class handles creating and connecting to multiplayer servers using the [ENetMultiplayerPeer].
+## It provides convenient signals for connection lifecycle events and automatically sets up
+## UPNP port forwarding when hosting a server.
 
+## Emitted when server is created
 signal server_started
+## Emitted when server is closed
 signal server_stopped
+## Emitted when peer connects
 signal peer_connected(id: int)
+## Emitted when peer disconnects
 signal peer_disconnected(id: int)
+## Emitted when successfully connected to server
 signal connected_to_server
+## Emitted when connection to server failed
 signal connection_failed
 
+## Default port of the created server
 const DEFAULT_PORT: int = 27017
-const MAX_PLAYERS: int = 4
+## Maximum amount of clients allowed to connect to the server
+const MAX_CLIENTS: int = 3
+
+## Default IP of the created client
+const DEFAULT_IP: String = "127.0.0.1"
 
 
 func _ready() -> void:
@@ -19,26 +35,27 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
-
-func start_server(port: int = DEFAULT_PORT) -> void:
+## Create a server with a given [param port]
+func create_server(port: int = DEFAULT_PORT) -> void:
 	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
-	var error: Error = peer.create_server(port, MAX_PLAYERS)
+	var error: Error = peer.create_server(port, MAX_CLIENTS)
 	if error != Error.OK:
-		push_error("Failed to start server on port %d" % port)
+		push_error("Failed to create server on port %d" % port)
 		return
 	
 	multiplayer.multiplayer_peer = peer
 	server_started.emit()
 	print("Server started on port %d" % port)
 	
-	upnp_setup(port)
+	# Setup UPNP port forwarding if supported
+	_upnp_setup(port)
 
-
-func join_server(ip: String, port: int = DEFAULT_PORT) -> void:
+## Create a client with a given [param ip] and [param port]
+func create_client(ip: String = DEFAULT_IP, port: int = DEFAULT_PORT) -> void:
 	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 	var error: Error = peer.create_client(ip, port)
 	if error != Error.OK:
-		push_error("Failed to start server on port %d" % port)
+		push_error("Failed to create client on %s:%d" % [ip, port])
 		return
 	
 	multiplayer.multiplayer_peer = peer
@@ -71,7 +88,7 @@ func _on_server_disconnected() -> void:
 	server_stopped.emit()
 
 
-func upnp_setup(port: int) -> void:
+func _upnp_setup(port: int) -> void:
 	var upnp: UPNP = UPNP.new()
 	var discover_result: int = upnp.discover()
 	if discover_result != UPNP.UPNP_RESULT_SUCCESS:
